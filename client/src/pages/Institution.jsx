@@ -74,18 +74,6 @@ export const Institution = () => {
             bio_rn: 'Uwaserukiye Leta n\'Ubushikiranganji bujejwe akazi, ubutunzi hamwe n\'abakozi ba Leta.',
             bio_en: 'Representative of the ministries in charge of labor, civil service, and finance.'
           },
-          {
-            id: 5,
-            initials: 'MA',
-            full_name: 'MBONABUCA Athanase',
-            role_title_fr: 'Secrétaire Exécutif Permanent',
-            role_title_rn: 'Umunyamabanga Nshingwabikorwa',
-            role_title_en: 'Permanent Executive Secretary',
-            photo_url: '/images/bureau/athanase_mbonabuca.jpg',
-            bio_fr: 'Direction des services administratifs, techniques et opérationnels du CNDS.',
-            bio_rn: 'Ayobora ibiro bijejwe ubutegetsi, ubuhinga hamwe n\'ibikorwa bya buri munsi bya CNDS.',
-            bio_en: 'Directing the administrative, technical, and day-to-day operational services of the CNDS.'
-          },
         ]);
       });
   }, []);
@@ -201,7 +189,7 @@ export const Institution = () => {
                 <p>{t('bureau.subtitle')}</p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {boardMembers.map((member) => (
                   <div
                     key={member.id}

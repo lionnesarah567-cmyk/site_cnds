@@ -178,6 +178,7 @@ export const Contact = () => {
             </h4>
             <p className="text-[#C9C7C0] text-[15px]">
               contact@cndsburundi.bi<br />
+              infocndsburundi2011@gmail.com<br />
               secretariat@cndsburundi.bi
             </p>
           </div>

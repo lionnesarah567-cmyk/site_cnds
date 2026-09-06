@@ -81,7 +81,6 @@ export const Home = () => {
           { id: 2, initials: 'CN', full_name: 'Céléstin NSAVYIMANA', role_title_fr: 'Vice-président — Travailleurs', role_title_rn: 'Icyegera c\'Umukuru — Abakozi', role_title_en: 'Vice President — Workers', photo_url: '/images/bureau/celestin_nsavyimana.jpg' },
           { id: 3, initials: 'TK', full_name: 'Théodore KAMWENUBUSA', role_title_fr: 'Vice-président — Employeurs', role_title_rn: 'Icyegera c\'Umukuru — Abakoresha', role_title_en: 'Vice President — Employers', photo_url: '/images/bureau/theodore_kamwenubusa.jpg' },
           { id: 4, initials: 'EN', full_name: 'Emmanuel Ngomirakiza', role_title_fr: 'Représentant du gouvernement', role_title_rn: 'Uwaserukiye Leta', role_title_en: 'Government Representative', photo_url: '/images/bureau/emmanuel_ngomirakiza.jpg' },
-          { id: 5, initials: 'MA', full_name: 'MBONABUCA Athanase', role_title_fr: 'Secrétaire Exécutif Permanent', role_title_rn: 'Umunyamabanga Nshingwabikorwa', role_title_en: 'Permanent Executive Secretary', photo_url: '/images/bureau/athanase_mbonabuca.jpg' },
         ]);
       });
   }, []);

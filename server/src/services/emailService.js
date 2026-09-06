@@ -3,10 +3,19 @@ import { db } from '../db/index.js';
 
 // Configuration du transporteur d'email
 function getTransporter() {
+  const service = process.env.SMTP_SERVICE;
   const host = process.env.SMTP_HOST;
   const port = Number(process.env.SMTP_PORT) || 587;
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
+
+  if (service && user && pass) {
+    return nodemailer.createTransport({
+      service,
+      auth: { user, pass },
+      tls: { rejectUnauthorized: false },
+    });
+  }
 
   if (host && user && pass) {
     return nodemailer.createTransport({
@@ -14,6 +23,7 @@ function getTransporter() {
       port,
       secure: port === 465,
       auth: { user, pass },
+      tls: { rejectUnauthorized: false },
     });
   }
   return null;

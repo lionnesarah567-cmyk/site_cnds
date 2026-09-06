@@ -80,15 +80,6 @@ export async function seed() {
       bio: 'Haut cadre représentant l\'État et les ministères de tutelle pour l\'harmonisation des politiques publiques du travail et de la fonction publique.',
       order: 4,
     },
-    {
-      name: 'MBONABUCA Athanase',
-      role_fr: 'Secrétaire Exécutif Permanent',
-      role_rn: 'Umunyamabanga Nshingwabikorwa',
-      college: 'Secrétariat Exécutif',
-      photo: '/images/bureau/athanase_mbonabuca.jpg',
-      bio: 'Dirige les services administratifs, techniques et opérationnels du CNDS, coordonne la préparation des sessions et assure le suivi des résolutions.',
-      order: 5,
-    },
   ];
 
   for (const m of members) {
