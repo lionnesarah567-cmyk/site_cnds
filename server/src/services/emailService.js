@@ -1,13 +1,23 @@
 import nodemailer from 'nodemailer';
 import { db } from '../db/index.js';
 
+function cleanEnv(val) {
+  if (!val) return undefined;
+  return String(val).replace(/^["']|["']$/g, '').trim();
+}
+
+export function getFromEmail() {
+  const raw = process.env.SMTP_FROM || 'CNDS Burundi <no-reply@cndsburundi.bi>';
+  return cleanEnv(raw);
+}
+
 // Configuration du transporteur d'email
 function getTransporter() {
-  const service = process.env.SMTP_SERVICE;
-  const host = process.env.SMTP_HOST;
-  const port = Number(process.env.SMTP_PORT) || 587;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const service = cleanEnv(process.env.SMTP_SERVICE);
+  const host = cleanEnv(process.env.SMTP_HOST);
+  const port = Number(cleanEnv(process.env.SMTP_PORT)) || 587;
+  const user = cleanEnv(process.env.SMTP_USER);
+  const pass = cleanEnv(process.env.SMTP_PASS);
 
   if (service && user && pass) {
     return nodemailer.createTransport({
@@ -29,7 +39,6 @@ function getTransporter() {
   return null;
 }
 
-const FROM_EMAIL = process.env.SMTP_FROM || 'CNDS Burundi <no-reply@cndsburundi.bi>';
 const CLIENT_URL = process.env.CLIENT_URL || 'https://site-cnds-bbce.vercel.app';
 const API_URL = process.env.API_URL || '';
 
@@ -217,14 +226,14 @@ export async function notifySubscribersAboutNewArticle(article) {
       if (transporter) {
         try {
           await transporter.sendMail({
-            from: FROM_EMAIL,
+            from: getFromEmail(),
             to: sub.email,
             subject,
             html,
           });
           sentCount++;
         } catch (mailErr) {
-          console.error(`❌ Échec d'envoi à ${sub.email}:`, mailErr.message);
+          console.error(`❌ Échec d'envoi à ${sub.email}:`, mailErr.message, mailErr.response || '');
         }
       } else {
         // Mode simulation (quand pas de SMTP configuré)
@@ -269,15 +278,75 @@ export async function sendWelcomeEmail(email, lang, unsubscribeToken) {
   if (transporter) {
     try {
       await transporter.sendMail({
-        from: FROM_EMAIL,
+        from: getFromEmail(),
         to: email,
         subject: welcomeSubjects[subLang],
         html: welcomeHtml,
       });
+      console.log(`✅ Email de bienvenue envoyé avec succès à ${email}`);
     } catch (err) {
-      console.error('Erreur envoi email bienvenue:', err.message);
+      console.error('❌ Erreur envoi email bienvenue:', err.message, err.response || '');
     }
   } else {
     console.log(`📨 [Simulation Email Bienvenue CNDS] À: ${email} (${subLang.toUpperCase()}) | Sujet: "${welcomeSubjects[subLang]}"`);
+  }
+}
+
+/**
+ * Endpoint de diagnostic et test direct de la connexion SMTP
+ */
+export async function testSmtpConnection(targetEmail) {
+  const transporter = getTransporter();
+  if (!transporter) {
+    return {
+      success: false,
+      configured: false,
+      message: 'Aucun SMTP détecté. Assurez-vous d’avoir renseigné SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS sur Railway.',
+      variables_detectees: {
+        SMTP_HOST: !!process.env.SMTP_HOST,
+        SMTP_PORT: !!process.env.SMTP_PORT,
+        SMTP_USER: !!process.env.SMTP_USER,
+        SMTP_PASS: !!process.env.SMTP_PASS,
+        SMTP_FROM: !!process.env.SMTP_FROM,
+      },
+    };
+  }
+
+  try {
+    await transporter.verify();
+  } catch (verifyErr) {
+    return {
+      success: false,
+      etape: 'Verification_authentification_SMTP',
+      erreur: verifyErr.message,
+      code: verifyErr.code,
+      reponse_serveur: verifyErr.response,
+    };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: getFromEmail(),
+      to: targetEmail,
+      subject: 'Test Connexion SMTP — CNDS Burundi',
+      text: 'Félicitations ! Votre serveur SMTP Brevo est correctement connecté et expédie les emails avec succès.',
+    });
+    return {
+      success: true,
+      etape: 'Envoi_reussi',
+      messageId: info.messageId,
+      accepted: info.accepted,
+      reponse: info.response,
+      expediteur_utilise: getFromEmail(),
+    };
+  } catch (sendErr) {
+    return {
+      success: false,
+      etape: 'Envoi_email_test',
+      erreur: sendErr.message,
+      code: sendErr.code,
+      reponse_serveur: sendErr.response,
+      expediteur_utilise: getFromEmail(),
+    };
   }
 }

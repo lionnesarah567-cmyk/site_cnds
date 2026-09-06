@@ -2,7 +2,7 @@ import express from 'express';
 import crypto from 'crypto';
 import { z } from 'zod';
 import { db } from '../db/index.js';
-import { sendWelcomeEmail } from '../services/emailService.js';
+import { sendWelcomeEmail, testSmtpConnection } from '../services/emailService.js';
 import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -159,6 +159,17 @@ router.get('/stats', authenticateToken, async (req, res) => {
   } catch (err) {
     console.error('Erreur GET /newsletter/stats:', err);
     return res.status(500).json({ success: false, message: 'Erreur récupération statistiques' });
+  }
+});
+
+// GET /api/newsletter/test-smtp?to=votre-email@gmail.com
+router.get('/test-smtp', async (req, res) => {
+  try {
+    const to = req.query.to || 'infocndsburundi2011@gmail.com';
+    const result = await testSmtpConnection(to);
+    return res.json(result);
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
   }
 });
 
