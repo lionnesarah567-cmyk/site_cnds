@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="46" fill="#FFFFFF" stroke="#B5852E" stroke-width="3"/>
+  <circle cx="50" cy="50" r="38" fill="none" stroke="#1A7F3C" stroke-width="2"/>
+  <path d="M50 20 L55 35 L70 35 L58 45 L62 60 L50 50 L38 60 L42 45 L30 35 L45 35 Z" fill="#CE1126" />
+  <text x="50" y="80" text-anchor="middle" font-family="Fraunces, serif" font-weight="700" font-size="16" fill="#161616">CNDS</text>
+</svg>
