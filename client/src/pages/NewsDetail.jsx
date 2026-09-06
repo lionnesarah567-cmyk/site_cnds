@@ -24,6 +24,7 @@ export const NewsDetail = () => {
           slug,
           title_fr: 'Vulgarisation de la Charte Nationale de Dialogue Social',
           title_rn: 'Kumenyekanisha Amasezerano Nshingiro y\'Ibiganiro mu Bakozi',
+          title_en: 'Dissemination of the National Charter for Social Dialogue',
           content_fr: `
             <p>La Charte Nationale de Dialogue Social, signée à Gitega le 25 mai 2011 entre le Gouvernement du Burundi, l'Association des Employeurs du Burundi (AEB) et les organisations syndicales de travailleurs (COSYBU et CSB), demeure la pierre angulaire des relations professionnelles en République du Burundi.</p>
             <p>Cette charte nationale apporte une innovation institutionnelle de taille en préconisant la création d'un organe permanent, autonome et tripartite : le Comité National de Dialogue Social (CNDS).</p>
@@ -35,6 +36,12 @@ export const NewsDetail = () => {
             <p>Ayo masezerano yateguye ishingwa ry'urwego ruhoraho, rwigenga kandi rw'impande zitatu: Komite Nserukiragihugu y'Ibiganiro mu Bakozi (CNDS).</p>
             <h3>Intumbero isangiwe ku bw'amahoro arama mu kazi</h3>
             <p>Ibiganiro mu bakozi ni uburyo bukomeye bwo guteza imbere ubutunzi n'ubumwe bw'abenegihugu. Biciye mu bwumvikane no mu nama zihoraho, CNDS ituma habaho gutorera inyishu ibibazo kare, kwirinda imyigaragamvyo no kwubahiriza agateka ka buri wese mu kazi.</p>
+          `,
+          content_en: `
+            <p>The National Charter for Social Dialogue, signed in Gitega on May 25, 2011, between the Government of Burundi, the Association of Employers of Burundi (AEB), and the trade union confederations (COSYBU and CSB), remains the cornerstone of professional relations in the Republic of Burundi.</p>
+            <p>This national charter introduces a major institutional innovation by advocating for the creation of a permanent, autonomous, and tripartite body: the National Committee for Social Dialogue (CNDS).</p>
+            <h3>A shared vision for social peace</h3>
+            <p>Social dialogue is a fundamental pillar for economic development and national cohesion. By providing a structured space for mediation, negotiation, and conciliation, the CNDS enables early resolution of disputes, prevents harmful strikes, and guarantees respect for the rights and duties of all parties.</p>
           `,
           published_at: '2024-09-15',
         });
@@ -61,8 +68,8 @@ export const NewsDetail = () => {
     );
   }
 
-  const title = lang === 'rn' && article.title_rn ? article.title_rn : article.title_fr;
-  const content = lang === 'rn' && article.content_rn ? article.content_rn : (article.content_fr || article.summary_fr);
+  const title = lang === 'en' && article.title_en ? article.title_en : (lang === 'rn' && article.title_rn ? article.title_rn : article.title_fr);
+  const content = lang === 'en' && article.content_en ? article.content_en : (lang === 'rn' && article.content_rn ? article.content_rn : (article.content_fr || article.summary_fr));
 
   return (
     <article className="py-16 md:py-20 bg-cnds-white">
@@ -76,7 +83,7 @@ export const NewsDetail = () => {
 
         {/* Date */}
         <div className="text-[13px] text-cnds-ink-soft mb-3">
-          {article.published_at ? new Date(article.published_at).toLocaleDateString(lang === 'rn' ? 'rn-BI' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
+          {article.published_at ? new Date(article.published_at).toLocaleDateString(lang === 'en' ? 'en-US' : (lang === 'rn' ? 'rn-BI' : 'fr-FR'), { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
         </div>
 
         {/* Title */}

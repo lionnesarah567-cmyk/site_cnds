@@ -23,8 +23,10 @@ export const NewsList = () => {
             slug: 'vulgarisation-de-la-charte-nationale-de-dialogue-social',
             title_fr: 'Vulgarisation de la Charte Nationale de Dialogue Social',
             title_rn: 'Kumenyekanisha Amasezerano Nshingiro y\'Ibiganiro mu Bakozi',
+            title_en: 'Dissemination of the National Charter for Social Dialogue',
             summary_fr: 'Campagne de sensibilisation auprès des comités provinciaux et communaux de dialogue social.',
             summary_rn: 'Kumenyekanisha amasezerano nshingiro mu nzego z\'intara n\'amakomine.',
+            summary_en: 'Awareness campaign with provincial and municipal committees for social dialogue.',
             published_at: '2024-09-15',
           },
           {
@@ -32,8 +34,10 @@ export const NewsList = () => {
             slug: 'le-6eme-seminaire-regional-de-linternationale-francophone',
             title_fr: '6ème Séminaire régional de l\'Internationale Francophone de Dialogue Social',
             title_rn: 'Inama Nteguro Mpuzamakungu y\'Ibiganiro mu Bakozi Bakoresha Igifaransa',
+            title_en: '6th Regional Seminar of the Francophone International for Social Dialogue',
             summary_fr: 'Le CNDS a pris part aux échanges régionaux sur les mécanismes de dialogue social.',
             summary_rn: 'CNDS yitavye ibiganiro byo mu karere ku bijanye n\'imibano myiza mu kazi.',
+            summary_en: 'CNDS took part in regional discussions on social dialogue mechanisms.',
             published_at: '2024-09-08',
           },
           {
@@ -41,8 +45,10 @@ export const NewsList = () => {
             slug: 'renforcement-des-capacites-comites-provinciaux-gitega-karusi',
             title_fr: 'Atelier de renforcement des capacités des CPDS et CCDS',
             title_rn: 'Uruhande rw\'Inyigisho ku Bakorera mu Nzego z\'Intara n\'Amakomine',
+            title_en: 'Capacity Building Workshop for CPDS and CCDS',
             summary_fr: 'Formation des membres des comités provinciaux et communaux de dialogue social.',
             summary_rn: 'Inyigisho zahawe abagize inzego za CNDS mu ntara n\'amakomine.',
+            summary_en: 'Training of members of provincial and communal social dialogue committees.',
             published_at: '2024-08-28',
           },
           {
@@ -50,8 +56,10 @@ export const NewsList = () => {
             slug: 'lancement-officiel-universite-du-burundi-comite-dialogue',
             title_fr: 'Lancement officiel à l\'Université du Burundi du Comité de Dialogue Social',
             title_rn: 'Gushinga ku Mugaragaro Komite y\'Ibiganiro muri Kaminuza y\'Uburundi',
+            title_en: 'Official Launch at the University of Burundi of the Social Dialogue Committee',
             summary_fr: 'Mise en place d\'un cadre de concertation tripartite au sein de l\'institution universitaire.',
             summary_rn: 'Gushyiraho urwego rw\'ibiganiro mu bakozi n\'abayobozi ba Kaminuza y\'Uburundi.',
+            summary_en: 'Establishment of a tripartite consultation framework within the university.',
             published_at: '2024-07-14',
           },
           {
@@ -59,8 +67,10 @@ export const NewsList = () => {
             slug: 'assemblee-pleniere-ordinaire-du-cnds-bujumbura',
             title_fr: 'Assemblée Plénière Ordinaire du CNDS : Bilan et Perspectives',
             title_rn: 'Inama Rusangi ya CNDS: Ibyakozwe n\'Imigambi y\'Imbere',
+            title_en: 'CNDS Ordinary Plenary Assembly: Review and Perspectives',
             summary_fr: 'Réunion des 27 membres titulaires sous la présidence de S.E. Sylvestre NTIBANTUNGANYA.',
             summary_rn: 'Inama y\'abanywanyi 27 bayobowe na Nyenicubahiro S.E. Sylvestre NTIBANTUNGANYA.',
+            summary_en: 'Meeting of the 27 full members chaired by H.E. Sylvestre NTIBANTUNGANYA.',
             published_at: '2024-06-20',
           },
           {
@@ -68,8 +78,10 @@ export const NewsList = () => {
             slug: 'visite-de-travail-des-partenaires-sociaux-dans-les-provinces-du-nord',
             title_fr: 'Visite de terrain et sensibilisation dans les provinces du Nord',
             title_rn: 'Urugendo rw\'Akazi mu Ntara zo mu Buraruko bw\'Uburundi',
+            title_en: 'Field Visit and Sensitization in the Northern Provinces',
             summary_fr: 'Délégation tripartite du CNDS en mission d\'écoute auprès des entreprises et syndicats à Ngozi.',
             summary_rn: 'Intumwa za CNDS ziri mu rugendo rw\'akazi mu mashirahamwe n\'amasendika i Ngozi.',
+            summary_en: 'Tripartite CNDS delegation on a consultation mission to companies and trade unions in Ngozi.',
             published_at: '2024-05-18',
           },
         ]);
@@ -77,8 +89,8 @@ export const NewsList = () => {
   }, []);
 
   const filtered = news.filter((n) => {
-    const title = lang === 'rn' && n.title_rn ? n.title_rn : n.title_fr;
-    const summary = lang === 'rn' && n.summary_rn ? n.summary_rn : n.summary_fr;
+    const title = lang === 'en' && n.title_en ? n.title_en : (lang === 'rn' && n.title_rn ? n.title_rn : n.title_fr);
+    const summary = lang === 'en' && n.summary_en ? n.summary_en : (lang === 'rn' && n.summary_rn ? n.summary_rn : n.summary_fr);
     return (
       title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       summary.toLowerCase().includes(searchTerm.toLowerCase())
@@ -111,30 +123,34 @@ export const NewsList = () => {
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filtered.map((item) => (
-            <article key={item.id} className="group">
-              <Link to={`/actualites/${item.slug}`}>
-                <div className="aspect-[16/10] rounded-[10px] mb-4 bg-gradient-to-br from-[#F3F1EA] to-[#E9E6DC] overflow-hidden border border-cnds-line">
-                  {item.image_url ? (
-                    <img src={item.image_url} alt={item.title_fr} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center font-serif font-semibold text-cnds-gold/40 text-xl">
-                      CNDS
-                    </div>
-                  )}
-                </div>
-                <div className="text-[12px] text-cnds-ink-soft mb-2">
-                  {item.published_at ? new Date(item.published_at).toLocaleDateString(lang === 'rn' ? 'rn-BI' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
-                </div>
-                <h3 className="text-[16.5px] font-medium text-cnds-ink group-hover:text-cnds-red transition-colors mb-2 leading-snug">
-                  {lang === 'rn' && item.title_rn ? item.title_rn : item.title_fr}
-                </h3>
-                <p className="text-[13.5px] text-cnds-ink-soft leading-relaxed line-clamp-2">
-                  {lang === 'rn' && item.summary_rn ? item.summary_rn : item.summary_fr}
-                </p>
-              </Link>
-            </article>
-          ))}
+          {filtered.map((item) => {
+            const title = lang === 'en' && item.title_en ? item.title_en : (lang === 'rn' && item.title_rn ? item.title_rn : item.title_fr);
+            const summary = lang === 'en' && item.summary_en ? item.summary_en : (lang === 'rn' && item.summary_rn ? item.summary_rn : item.summary_fr);
+            return (
+              <article key={item.id} className="group">
+                <Link to={`/actualites/${item.slug}`}>
+                  <div className="aspect-[16/10] rounded-[10px] mb-4 bg-gradient-to-br from-[#F3F1EA] to-[#E9E6DC] overflow-hidden border border-cnds-line">
+                    {item.image_url ? (
+                      <img src={item.image_url} alt={item.title_fr} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center font-serif font-semibold text-cnds-gold/40 text-xl">
+                        CNDS
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-[12px] text-cnds-ink-soft mb-2">
+                    {item.published_at ? new Date(item.published_at).toLocaleDateString(lang === 'en' ? 'en-US' : (lang === 'rn' ? 'rn-BI' : 'fr-FR'), { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
+                  </div>
+                  <h3 className="text-[16.5px] font-medium text-cnds-ink group-hover:text-cnds-red transition-colors mb-2 leading-snug">
+                    {title}
+                  </h3>
+                  <p className="text-[13.5px] text-cnds-ink-soft leading-relaxed line-clamp-2">
+                    {summary}
+                  </p>
+                </Link>
+              </article>
+            );
+          })}
         </div>
 
       </div>

@@ -11,16 +11,19 @@ CREATE TABLE IF NOT EXISTS admins (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Table des Actualités (avec support bilingue FR/RN et assainissement)
+-- 2. Table des Actualités (avec support trilingue FR/RN/EN et assainissement)
 CREATE TABLE IF NOT EXISTS news (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     slug TEXT UNIQUE NOT NULL,
     title_fr TEXT NOT NULL,
     title_rn TEXT,
+    title_en TEXT,
     summary_fr TEXT NOT NULL,
     summary_rn TEXT,
+    summary_en TEXT,
     content_fr TEXT NOT NULL,
     content_rn TEXT,
+    content_en TEXT,
     category TEXT DEFAULT 'Dialogue Social',
     image_url TEXT,
     published_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -36,10 +39,12 @@ CREATE TABLE IF NOT EXISTS board_members (
     full_name TEXT NOT NULL,
     role_title_fr TEXT NOT NULL,
     role_title_rn TEXT,
+    role_title_en TEXT,
     college TEXT NOT NULL, -- Gouvernement, Employeurs, Travailleurs, Présidence
     photo_url TEXT,
     bio_fr TEXT,
     bio_rn TEXT,
+    bio_en TEXT,
     sort_order INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -51,9 +56,11 @@ CREATE TABLE IF NOT EXISTS legal_texts (
     category TEXT NOT NULL, -- Charte, Décret, Nomination
     title_fr TEXT NOT NULL,
     title_rn TEXT,
+    title_en TEXT,
     date_promulgated DATE NOT NULL,
     summary_fr TEXT NOT NULL,
     summary_rn TEXT,
+    summary_en TEXT,
     file_url TEXT DEFAULT '#',
     file_size TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -65,8 +72,10 @@ CREATE TABLE IF NOT EXISTS multimedia (
     type TEXT NOT NULL, -- 'video' ou 'report'
     title_fr TEXT NOT NULL,
     title_rn TEXT,
+    title_en TEXT,
     description_fr TEXT,
     description_rn TEXT,
+    description_en TEXT,
     url TEXT NOT NULL,
     thumbnail TEXT,
     file_size TEXT,
@@ -79,8 +88,10 @@ CREATE TABLE IF NOT EXISTS gallery (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title_fr TEXT NOT NULL,
     title_rn TEXT,
+    title_en TEXT,
     caption_fr TEXT,
     caption_rn TEXT,
+    caption_en TEXT,
     image_url TEXT NOT NULL,
     date_taken DATE,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -91,8 +102,10 @@ CREATE TABLE IF NOT EXISTS partners (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     category TEXT,
+    category_en TEXT,
     description_fr TEXT,
     description_rn TEXT,
+    description_en TEXT,
     logo_url TEXT,
     website_url TEXT DEFAULT '#',
     badge TEXT,

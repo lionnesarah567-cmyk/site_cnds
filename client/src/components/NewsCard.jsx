@@ -6,13 +6,14 @@ import { useLanguage } from '../context/LanguageContext';
 export const NewsCard = ({ item }) => {
   const { lang, t } = useLanguage();
 
-  const title = lang === 'rn' && item.title_rn ? item.title_rn : item.title_fr;
-  const summary = lang === 'rn' && item.summary_rn ? item.summary_rn : item.summary_fr;
+  const title = lang === 'en' && item.title_en ? item.title_en : (lang === 'rn' && item.title_rn ? item.title_rn : item.title_fr);
+  const summary = lang === 'en' && item.summary_en ? item.summary_en : (lang === 'rn' && item.summary_rn ? item.summary_rn : item.summary_fr);
   
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
     const date = new Date(dateStr);
-    return date.toLocaleDateString(lang === 'rn' ? 'rn-BI' : 'fr-FR', {
+    const locale = lang === 'en' ? 'en-US' : (lang === 'rn' ? 'rn-BI' : 'fr-FR');
+    return date.toLocaleDateString(locale, {
       day: 'numeric',
       month: 'long',
       year: 'numeric',

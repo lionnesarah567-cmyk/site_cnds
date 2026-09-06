@@ -37,8 +37,10 @@ export const Home = () => {
             slug: 'vulgarisation-de-la-charte-nationale-de-dialogue-social',
             title_fr: 'Vulgarisation de la Charte Nationale de Dialogue Social',
             title_rn: 'Kumenyekanisha Amasezerano Nshingiro y\'Ibiganiro mu Bakozi',
+            title_en: 'Dissemination of the National Charter for Social Dialogue',
             summary_fr: 'Campagne de sensibilisation auprès des comités provinciaux et communaux de dialogue social.',
             summary_rn: 'Kumenyekanisha amasezerano nshingiro mu nzego z\'intara n\'amakomine.',
+            summary_en: 'Awareness campaign with provincial and municipal committees for social dialogue.',
             published_at: '2024-09-15',
           },
           {
@@ -46,8 +48,10 @@ export const Home = () => {
             slug: 'le-6eme-seminaire-regional-de-linternationale-francophone',
             title_fr: '6ème Séminaire régional de l\'Internationale Francophone de Dialogue Social',
             title_rn: 'Inama Nteguro Mpuzamakungu y\'Ibiganiro mu Bakozi Bakoresha Igifaransa',
+            title_en: '6th Regional Seminar of the Francophone International for Social Dialogue',
             summary_fr: 'Le CNDS a pris part aux échanges régionaux sur les mécanismes de dialogue social.',
             summary_rn: 'CNDS yitavye ibiganiro byo mu karere ku bijanye n\'imibano myiza mu kazi.',
+            summary_en: 'CNDS took part in regional discussions on social dialogue mechanisms.',
             published_at: '2024-09-08',
           },
           {
@@ -55,8 +59,10 @@ export const Home = () => {
             slug: 'renforcement-des-capacites-comites-provinciaux-gitega-karusi',
             title_fr: 'Atelier de renforcement des capacités des CPDS et CCDS',
             title_rn: 'Uruhande rw\'Inyigisho ku Bakorera mu Nzego z\'Intara n\'Amakomine',
+            title_en: 'Capacity Building Workshop for CPDS and CCDS',
             summary_fr: 'Formation des membres des comités provinciaux et communaux de dialogue social.',
             summary_rn: 'Inyigisho zahawe abagize inzego za CNDS mu ntara n\'amakomine.',
+            summary_en: 'Training of members of provincial and communal social dialogue committees.',
             published_at: '2024-08-28',
           },
         ]);
@@ -71,11 +77,11 @@ export const Home = () => {
       })
       .catch(() => {
         setBoardMembers([
-          { id: 1, initials: 'SN', full_name: 'NTIBANTUNGANYA Sylvestre', role_title_fr: 'Président du CNDS', role_title_rn: 'Umukuru wa CNDS', photo_url: '/images/bureau/sylvestre_ntibantunganya.jpg' },
-          { id: 2, initials: 'CN', full_name: 'Céléstin NSAVYIMANA', role_title_fr: 'Vice-président — Travailleurs', role_title_rn: 'Icyegera c\'Umukuru — Abakozi', photo_url: '/images/bureau/celestin_nsavyimana.jpg' },
-          { id: 3, initials: 'TK', full_name: 'Théodore KAMWENUBUSA', role_title_fr: 'Vice-président — Employeurs', role_title_rn: 'Icyegera c\'Umukuru — Abakoresha', photo_url: '/images/bureau/theodore_kamwenubusa.jpg' },
-          { id: 4, initials: 'EN', full_name: 'Emmanuel Ngomirakiza', role_title_fr: 'Représentant du gouvernement', role_title_rn: 'Uwaserukiye Leta', photo_url: '/images/bureau/emmanuel_ngomirakiza.jpg' },
-          { id: 5, initials: 'MA', full_name: 'MBONABUCA Athanase', role_title_fr: 'Secrétaire Exécutif Permanent', role_title_rn: 'Umunyamabanga Nshingwabikorwa', photo_url: '/images/bureau/athanase_mbonabuca.jpg' },
+          { id: 1, initials: 'SN', full_name: 'NTIBANTUNGANYA Sylvestre', role_title_fr: 'Président du CNDS', role_title_rn: 'Umukuru wa CNDS', role_title_en: 'President of CNDS', photo_url: '/images/bureau/sylvestre_ntibantunganya.jpg' },
+          { id: 2, initials: 'CN', full_name: 'Céléstin NSAVYIMANA', role_title_fr: 'Vice-président — Travailleurs', role_title_rn: 'Icyegera c\'Umukuru — Abakozi', role_title_en: 'Vice President — Workers', photo_url: '/images/bureau/celestin_nsavyimana.jpg' },
+          { id: 3, initials: 'TK', full_name: 'Théodore KAMWENUBUSA', role_title_fr: 'Vice-président — Employeurs', role_title_rn: 'Icyegera c\'Umukuru — Abakoresha', role_title_en: 'Vice President — Employers', photo_url: '/images/bureau/theodore_kamwenubusa.jpg' },
+          { id: 4, initials: 'EN', full_name: 'Emmanuel Ngomirakiza', role_title_fr: 'Représentant du gouvernement', role_title_rn: 'Uwaserukiye Leta', role_title_en: 'Government Representative', photo_url: '/images/bureau/emmanuel_ngomirakiza.jpg' },
+          { id: 5, initials: 'MA', full_name: 'MBONABUCA Athanase', role_title_fr: 'Secrétaire Exécutif Permanent', role_title_rn: 'Umunyamabanga Nshingwabikorwa', role_title_en: 'Permanent Executive Secretary', photo_url: '/images/bureau/athanase_mbonabuca.jpg' },
         ]);
       });
   }, []);
@@ -303,7 +309,7 @@ export const Home = () => {
                   </h3>
                 </div>
                 <p className="text-[12.5px] text-cnds-ink-soft font-medium mt-1">
-                  {lang === 'rn' && member.role_title_rn ? member.role_title_rn : member.role_title_fr}
+                  {lang === 'en' && member.role_title_en ? member.role_title_en : (lang === 'rn' && member.role_title_rn ? member.role_title_rn : member.role_title_fr)}
                 </p>
               </div>
             ))}
@@ -338,13 +344,13 @@ export const Home = () => {
                     )}
                   </div>
                   <div className="text-[12px] text-cnds-ink-soft mb-2">
-                    {item.published_at ? new Date(item.published_at).toLocaleDateString(lang === 'rn' ? 'rn-BI' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
+                    {item.published_at ? new Date(item.published_at).toLocaleDateString(lang === 'en' ? 'en-US' : (lang === 'rn' ? 'rn-BI' : 'fr-FR'), { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
                   </div>
                   <h3 className="text-[16.5px] font-medium text-cnds-ink group-hover:text-cnds-red transition-colors mb-2 leading-snug">
-                    {lang === 'rn' && item.title_rn ? item.title_rn : item.title_fr}
+                    {lang === 'en' && item.title_en ? item.title_en : (lang === 'rn' && item.title_rn ? item.title_rn : item.title_fr)}
                   </h3>
                   <p className="text-[13.5px] text-cnds-ink-soft leading-relaxed line-clamp-2">
-                    {lang === 'rn' && item.summary_rn ? item.summary_rn : item.summary_fr}
+                    {lang === 'en' && item.summary_en ? item.summary_en : (lang === 'rn' && item.summary_rn ? item.summary_rn : item.summary_fr)}
                   </p>
                 </Link>
               </article>

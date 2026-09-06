@@ -18,8 +18,8 @@ export const Lightbox = ({ isOpen, currentImage, onClose, onPrev, onNext, hasPre
 
   if (!isOpen || !currentImage) return null;
 
-  const title = lang === 'rn' && currentImage.title_rn ? currentImage.title_rn : currentImage.title_fr;
-  const caption = lang === 'rn' && currentImage.caption_rn ? currentImage.caption_rn : currentImage.caption_fr;
+  const title = lang === 'en' && currentImage.title_en ? currentImage.title_en : (lang === 'rn' && currentImage.title_rn ? currentImage.title_rn : currentImage.title_fr);
+  const caption = lang === 'en' && currentImage.caption_en ? currentImage.caption_en : (lang === 'rn' && currentImage.caption_rn ? currentImage.caption_rn : currentImage.caption_fr);
 
   return (
     <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4">

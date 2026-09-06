@@ -178,7 +178,7 @@ export const Header = () => {
           <div className="flex text-[13px] font-medium border border-cnds-line rounded-full overflow-hidden">
             <button
               onClick={() => setLang('fr')}
-              className={`px-3 py-1.5 transition-colors ${
+              className={`px-2.5 sm:px-3 py-1.5 transition-colors ${
                 lang === 'fr' ? 'bg-cnds-ink text-cnds-white font-semibold' : 'text-cnds-ink-soft hover:text-cnds-ink'
               }`}
             >
@@ -186,11 +186,19 @@ export const Header = () => {
             </button>
             <button
               onClick={() => setLang('rn')}
-              className={`px-3 py-1.5 transition-colors ${
+              className={`px-2.5 sm:px-3 py-1.5 transition-colors ${
                 lang === 'rn' ? 'bg-cnds-ink text-cnds-white font-semibold' : 'text-cnds-ink-soft hover:text-cnds-ink'
               }`}
             >
               RN
+            </button>
+            <button
+              onClick={() => setLang('en')}
+              className={`px-2.5 sm:px-3 py-1.5 transition-colors ${
+                lang === 'en' ? 'bg-cnds-ink text-cnds-white font-semibold' : 'text-cnds-ink-soft hover:text-cnds-ink'
+              }`}
+            >
+              EN
             </button>
           </div>
 
@@ -213,6 +221,24 @@ export const Header = () => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-cnds-white border-b border-cnds-line px-6 py-4 space-y-3">
+          {/* Mobile language switch */}
+          <div className="flex items-center justify-between pb-3 border-b border-cnds-line">
+            <span className="text-xs font-medium text-cnds-ink-soft">Langue / Ururimi / Language</span>
+            <div className="flex gap-1.5">
+              {['fr', 'rn', 'en'].map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className={`px-2.5 py-1 rounded text-xs font-bold uppercase transition-colors ${
+                    lang === l ? 'bg-cnds-ink text-white' : 'bg-cnds-offwhite text-cnds-ink border border-cnds-line'
+                  }`}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <Link to="/" className="block text-sm font-medium py-2 text-cnds-ink hover:text-cnds-red">
             {t('nav.home')}
           </Link>

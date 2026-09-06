@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import fr from '../i18n/fr.json';
 import rn from '../i18n/rn.json';
+import en from '../i18n/en.json';
 
-const translations = { fr, rn };
+const translations = { fr, rn, en };
 
 const LanguageContext = createContext();
 
@@ -17,10 +18,10 @@ export const LanguageProvider = ({ children }) => {
   }, [lang]);
 
   const toggleLanguage = (newLang) => {
-    if (newLang && (newLang === 'fr' || newLang === 'rn')) {
+    if (newLang && ['fr', 'rn', 'en'].includes(newLang)) {
       setLang(newLang);
     } else {
-      setLang((prev) => (prev === 'fr' ? 'rn' : 'fr'));
+      setLang((prev) => (prev === 'fr' ? 'rn' : prev === 'rn' ? 'en' : 'fr'));
     }
   };
 

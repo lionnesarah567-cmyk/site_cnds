@@ -32,9 +32,11 @@ export const Institution = () => {
             full_name: 'NTIBANTUNGANYA Sylvestre',
             role_title_fr: 'Président du CNDS',
             role_title_rn: 'Umukuru wa CNDS',
+            role_title_en: 'President of CNDS',
             photo_url: '/images/bureau/sylvestre_ntibantunganya.jpg',
             bio_fr: 'Ancien Président de la République du Burundi, nommé par Décret N° 238 du 12 octobre 2021 pour présider et animer les travaux du Conseil.',
-            bio_rn: 'Yahoze arongoye Republika y\'Uburundi, yagenwe n\'Itegeko N° 238 ryo kuwa 12 Gitugutu 2021 ngo ayobore inama zose za CNDS mu bwigenge busesuye.'
+            bio_rn: 'Yahoze arongoye Republika y\'Uburundi, yagenwe n\'Itegeko N° 238 ryo kuwa 12 Gitugutu 2021 ngo ayobore inama zose za CNDS mu bwigenge busesuye.',
+            bio_en: 'Former President of the Republic of Burundi, appointed by Decree No. 238 of October 12, 2021, to chair and lead the Council in full independence.'
           },
           {
             id: 2,
@@ -42,9 +44,11 @@ export const Institution = () => {
             full_name: 'Céléstin NSAVYIMANA',
             role_title_fr: 'Vice-président — Travailleurs',
             role_title_rn: 'Icyegera c\'Umukuru — Abakozi',
+            role_title_en: 'Vice President — Workers',
             photo_url: '/images/bureau/celestin_nsavyimana.jpg',
             bio_fr: 'Représentant du collège des syndicats et confédérations des travailleurs burundais.',
-            bio_rn: 'Uwaserukiye uruhande rw\'amasendika n\'abakozi mu gukingira agateka n\'iterambere ry\'abakozi.'
+            bio_rn: 'Uwaserukiye uruhande rw\'amasendika n\'abakozi mu gukingira agateka n\'iterambere ry\'abakozi.',
+            bio_en: 'Representative of the trade unions and workers’ federations college of Burundi.'
           },
           {
             id: 3,
@@ -52,9 +56,11 @@ export const Institution = () => {
             full_name: 'Théodore KAMWENUBUSA',
             role_title_fr: 'Vice-président — Employeurs',
             role_title_rn: 'Icyegera c\'Umukuru — Abakoresha',
+            role_title_en: 'Vice President — Employers',
             photo_url: '/images/bureau/theodore_kamwenubusa.jpg',
             bio_fr: 'Représentant de l\'Association des Employeurs du Burundi (AEB/ANEB).',
-            bio_rn: 'Uwaserukiye ishirahamwe ry\'abakoresha mu Burundi (AEB/ANEB) ku bw\'ubutunzi n\'iterambere ry\'akazi.'
+            bio_rn: 'Uwaserukiye ishirahamwe ry\'abakoresha mu Burundi (AEB/ANEB) ku bw\'ubutunzi n\'iterambere ry\'akazi.',
+            bio_en: 'Representative of the Association of Employers of Burundi (AEB/ANEB).'
           },
           {
             id: 4,
@@ -62,9 +68,11 @@ export const Institution = () => {
             full_name: 'Emmanuel Ngomirakiza',
             role_title_fr: 'Représentant du gouvernement',
             role_title_rn: 'Uwaserukiye Leta',
+            role_title_en: 'Government Representative',
             photo_url: '/images/bureau/emmanuel_ngomirakiza.jpg',
             bio_fr: 'Représentant des ministères en charge du travail, de la fonction publique et des finances.',
-            bio_rn: 'Uwaserukiye Leta n\'Ubushikiranganji bujejwe akazi, ubutunzi hamwe n\'abakozi ba Leta.'
+            bio_rn: 'Uwaserukiye Leta n\'Ubushikiranganji bujejwe akazi, ubutunzi hamwe n\'abakozi ba Leta.',
+            bio_en: 'Representative of the ministries in charge of labor, civil service, and finance.'
           },
           {
             id: 5,
@@ -72,9 +80,11 @@ export const Institution = () => {
             full_name: 'MBONABUCA Athanase',
             role_title_fr: 'Secrétaire Exécutif Permanent',
             role_title_rn: 'Umunyamabanga Nshingwabikorwa',
+            role_title_en: 'Permanent Executive Secretary',
             photo_url: '/images/bureau/athanase_mbonabuca.jpg',
             bio_fr: 'Direction des services administratifs, techniques et opérationnels du CNDS.',
-            bio_rn: 'Ayobora ibiro bijejwe ubutegetsi, ubuhinga hamwe n\'ibikorwa bya buri munsi bya CNDS.'
+            bio_rn: 'Ayobora ibiro bijejwe ubutegetsi, ubuhinga hamwe n\'ibikorwa bya buri munsi bya CNDS.',
+            bio_en: 'Directing the administrative, technical, and day-to-day operational services of the CNDS.'
           },
         ]);
       });
@@ -218,11 +228,11 @@ export const Institution = () => {
                         {member.full_name}
                       </h3>
                       <div className="text-[13.5px] font-semibold text-cnds-red mb-3">
-                        {lang === 'rn' && member.role_title_rn ? member.role_title_rn : member.role_title_fr}
+                        {lang === 'en' && member.role_title_en ? member.role_title_en : (lang === 'rn' && member.role_title_rn ? member.role_title_rn : member.role_title_fr)}
                       </div>
                     </div>
                     <p className="text-[13.5px] text-cnds-ink-soft leading-relaxed mt-2 border-t border-cnds-line/60 pt-3">
-                      {lang === 'rn' && member.bio_rn ? member.bio_rn : member.bio_fr}
+                      {lang === 'en' && member.bio_en ? member.bio_en : (lang === 'rn' && member.bio_rn ? member.bio_rn : member.bio_fr)}
                     </p>
                   </div>
                 ))}

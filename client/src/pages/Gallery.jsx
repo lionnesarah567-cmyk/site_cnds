@@ -21,8 +21,10 @@ export const Gallery = () => {
             id: 1,
             title_fr: 'Signature de la Charte à Gitega',
             title_rn: 'Guterako umukono ku masezerano nshingiro i Gitega',
+            title_en: 'Signing of the Charter in Gitega',
             caption_fr: 'Les trois collèges lors de la signature en mai 2011.',
             caption_rn: 'Impande zitatu ziri mu gikorwa co gutera umukono ku masezerano muri Rusama 2011.',
+            caption_en: 'The three groups during the official signing in May 2011.',
             image_url: 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=1000&q=80',
             date_taken: '2011-05-25'
           },
@@ -30,8 +32,10 @@ export const Gallery = () => {
             id: 2,
             title_fr: 'Session Plénière Ordinaire',
             title_rn: 'Inama Rusangi ya CNDS',
+            title_en: 'Ordinary Plenary Session',
             caption_fr: 'Travaux des 27 membres de l\'Assemblée plénière.',
             caption_rn: 'Ibikorwa by\'abanywanyi 27 b\'Inama Rusangi.',
+            caption_en: 'Proceedings of the 27 members of the Plenary Assembly.',
             image_url: 'https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&w=1000&q=80',
             date_taken: '2024-06-20'
           },
@@ -39,8 +43,10 @@ export const Gallery = () => {
             id: 3,
             title_fr: 'Atelier de Médiation avec les CPDS',
             title_rn: 'Inyigisho z\'Ubuhuza n\'Inzego za CNDS mu Ntara',
+            title_en: 'Mediation Workshop with CPDS',
             caption_fr: 'Formation des délégués provinciaux à Gitega.',
             caption_rn: 'Inyigisho zahawe intumwa za CNDS mu ntara i Gitega.',
+            caption_en: 'Training of provincial delegates in Gitega.',
             image_url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1000&q=80',
             date_taken: '2024-08-28'
           },
@@ -48,8 +54,10 @@ export const Gallery = () => {
             id: 4,
             title_fr: 'Séminaire Francophone Régional',
             title_rn: 'Inama Mpuzamakungu y\'Abakoresha Igifaransa',
+            title_en: 'Regional Francophone Seminar',
             caption_fr: 'Délégations tripartites africaines réunies.',
             caption_rn: 'Intumwa z\'ibihugu bitandukanye bya Afrika ziteraniye i Bujumbura.',
+            caption_en: 'African tripartite delegations convened in Bujumbura.',
             image_url: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1000&q=80',
             date_taken: '2024-09-08'
           },
@@ -57,8 +65,10 @@ export const Gallery = () => {
             id: 5,
             title_fr: 'Visite d\'Entreprise & Écoute Sociale',
             title_rn: 'Urugendo mu Mashirahamwe no Kwumviriza Abakozi',
+            title_en: 'Enterprise Visit & Social Consultation',
             caption_fr: 'Rencontre avec le patronat et les délégués syndicaux.',
             caption_rn: 'Inama n\'abakoresha hamwe n\'abaserukira amasendika y\'abakozi.',
+            caption_en: 'Meeting with management and union representatives.',
             image_url: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=1000&q=80',
             date_taken: '2024-05-18'
           },
@@ -66,8 +76,10 @@ export const Gallery = () => {
             id: 6,
             title_fr: 'Réunion des Commissions Techniques',
             title_rn: 'Inama y\'Utugwi tw\'Inyigo z\'Ubuhinga',
+            title_en: 'Technical Commissions Meeting',
             caption_fr: 'Examen des textes de protection sociale.',
             caption_rn: 'Gusuzuma amategeko ajanye no gukingira agateka k\'abakozi.',
+            caption_en: 'Examination of social protection legal provisions.',
             image_url: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1000&q=80',
             date_taken: '2024-04-10'
           },
@@ -86,7 +98,7 @@ export const Gallery = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {photos.map((photo, index) => {
-            const title = lang === 'rn' && photo.title_rn ? photo.title_rn : photo.title_fr;
+            const title = lang === 'en' && photo.title_en ? photo.title_en : (lang === 'rn' && photo.title_rn ? photo.title_rn : photo.title_fr);
             return (
               <div
                 key={photo.id}
@@ -102,7 +114,7 @@ export const Gallery = () => {
                 </div>
                 <div className="p-4 bg-cnds-white">
                   <div className="text-[11.5px] text-cnds-ink-soft mb-1">
-                    {photo.date_taken ? new Date(photo.date_taken).toLocaleDateString(lang === 'rn' ? 'rn-BI' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
+                    {photo.date_taken ? new Date(photo.date_taken).toLocaleDateString(lang === 'en' ? 'en-US' : (lang === 'rn' ? 'rn-BI' : 'fr-FR'), { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
                   </div>
                   <h3 className="font-serif text-[15px] font-semibold text-cnds-ink group-hover:text-cnds-red transition-colors line-clamp-1">
                     {title}

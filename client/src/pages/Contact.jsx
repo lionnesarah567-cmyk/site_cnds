@@ -75,7 +75,7 @@ export const Contact = () => {
                 <input
                   type="text"
                   required
-                  placeholder={lang === 'rn' ? 'Ukarorero: Sylvestre Nizigiyimana' : 'Ex: Sylvestre Nizigiyimana'}
+                  placeholder={lang === 'en' ? 'e.g. John Doe' : (lang === 'rn' ? 'Ukarorero: Sylvestre Nizigiyimana' : 'Ex: Sylvestre Nizigiyimana')}
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   className="w-full px-3.5 py-2.5 rounded bg-[#242424] border border-[#3A3A3A] text-xs text-white placeholder-stone-400 focus:border-cnds-gold focus:outline-none"
@@ -118,7 +118,7 @@ export const Contact = () => {
                 <input
                   type="text"
                   required
-                  placeholder={lang === 'rn' ? 'Gusaba kubonana canke ibiganiro' : "Demande d'audience ou conciliation"}
+                  placeholder={lang === 'en' ? 'Meeting request or conciliation inquiry' : (lang === 'rn' ? 'Gusaba kubonana canke ibiganiro' : "Demande d'audience ou conciliation")}
                   value={formData.subject}
                   onChange={(e) => setFormData({...formData, subject: e.target.value})}
                   className="w-full px-3.5 py-2.5 rounded bg-[#242424] border border-[#3A3A3A] text-xs text-white placeholder-stone-400 focus:border-cnds-gold focus:outline-none"
@@ -133,7 +133,7 @@ export const Contact = () => {
               <textarea
                 required
                 rows={5}
-                placeholder={lang === 'rn' ? 'Andika hano ubutumwa bwawe bwa CNDS...' : 'Rédigez ici votre requête officielle...'}
+                placeholder={lang === 'en' ? 'Write your official request or inquiry here...' : (lang === 'rn' ? 'Andika hano ubutumwa bwawe bwa CNDS...' : 'Rédigez ici votre requête officielle...')}
                 value={formData.message}
                 onChange={(e) => setFormData({...formData, message: e.target.value})}
                 className="w-full px-3.5 py-2.5 rounded bg-[#242424] border border-[#3A3A3A] text-xs text-white placeholder-stone-400 focus:border-cnds-gold focus:outline-none resize-none"
@@ -158,8 +158,8 @@ export const Contact = () => {
               {t('contactSection.addressLabel')}
             </h4>
             <p className="text-[#C9C7C0] text-[15px] leading-relaxed">
-              {lang === 'rn' ? 'Kigobe, Ibaruwa rya Murembwe No 28' : 'Kigobe, Avenue Murembwe n°28'}<br />
-              {lang === 'rn' ? 'Bujumbura, Uburundi' : 'Bujumbura, Burundi'}
+              {lang === 'en' ? 'Kigobe, Avenue Murembwe No. 28' : (lang === 'rn' ? 'Kigobe, Ibaruwa rya Murembwe No 28' : 'Kigobe, Avenue Murembwe n°28')}<br />
+              {lang === 'en' ? 'Bujumbura, Burundi' : (lang === 'rn' ? 'Bujumbura, Uburundi' : 'Bujumbura, Burundi')}
             </p>
           </div>
 
