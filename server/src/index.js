@@ -37,22 +37,9 @@ app.use(
 );
 
 // CORS configuration
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
-  process.env.CLIENT_URL,
-].filter(Boolean);
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, server-to-server)
-      if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== 'production') {
-        callback(null, true);
-      } else {
-        callback(new Error('Non autorisé par la politique CORS'));
-      }
-    },
+    origin: true,
     credentials: true,
   })
 );
@@ -102,6 +89,15 @@ if (fs.existsSync(clientDist)) {
     }
     res.sendFile(path.join(clientDist, 'index.html'));
   });
+} else {
+  // Fallback for API root
+  app.get('/', (req, res) => {
+    res.json({
+      status: 'online',
+      message: 'CNDS Burundi Backend API is running.',
+      healthCheck: '/api/health',
+    });
+  });
 }
 
 // Global Error Handler
@@ -115,14 +111,16 @@ app.use((err, req, res, next) => {
 
 // Start Server & Auto-seed database
 if (process.env.NODE_ENV !== 'test') {
-  seed()
-    .catch((err) => console.log('Notice: DB init check ->', err.message))
-    .finally(() => {
-      app.listen(PORT, () => {
-        console.log(`🚀 Serveur CNDS API démarré sur le port ${PORT}`);
-        console.log(`📡 URL API : http://localhost:${PORT}/api`);
-      });
-    });
+  const host = '0.0.0.0';
+  app.listen(PORT, host, () => {
+    console.log(`🚀 Serveur CNDS API démarré sur http://${host}:${PORT}`);
+    console.log(`📡 Healthcheck : http://${host}:${PORT}/api/health`);
+    
+    // Run seed asynchronously after server starts
+    seed()
+      .then(() => console.log('✅ Base de données CNDS initialisée et prête.'))
+      .catch((err) => console.log('Notice DB init ->', err.message));
+  });
 }
 
 export default app;
