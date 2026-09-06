@@ -160,6 +160,18 @@
     "success": "Votre message a été transmis avec succès.",
     "error": "Erreur lors de l'envoi du message."
   },
+  "newsletter": {
+    "badge": "Restez Informé(e)",
+    "title": "Abonnez-vous aux actualités du CNDS",
+    "subtitle": "Recevez directement par email les nouveaux communiqués, décrets et rapports dès leur publication sur le site.",
+    "placeholder": "Votre adresse email officielle...",
+    "button": "S'abonner",
+    "subscribing": "Inscription...",
+    "privacy": "Vos données restent strictement confidentielles. Désabonnement possible à tout moment.",
+    "success": "Merci ! Votre abonnement a été enregistré avec succès.",
+    "already": "Vous êtes déjà inscrit(e) avec cette adresse email.",
+    "error": "Une erreur est survenue. Veuillez vérifier votre adresse email."
+  },
   "footer": {
     "tagline": "« Le dialogue social au service de la paix sociale en milieu du travail »",
     "navigation": "Navigation",

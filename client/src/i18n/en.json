@@ -160,6 +160,18 @@
     "success": "Your message has been successfully transmitted.",
     "error": "An error occurred while sending your message."
   },
+  "newsletter": {
+    "badge": "Stay Informed",
+    "title": "Subscribe to CNDS Updates",
+    "subtitle": "Receive official announcements, decrees, and social dialogue reports directly by email as soon as they are published.",
+    "placeholder": "Your official email address...",
+    "button": "Subscribe",
+    "subscribing": "Subscribing...",
+    "privacy": "Your information remains strictly confidential. You can unsubscribe at any time.",
+    "success": "Thank you! Your subscription has been successfully registered.",
+    "already": "You are already subscribed with this email address.",
+    "error": "An error occurred. Please check your email address and try again."
+  },
   "footer": {
     "tagline": "“Social dialogue for lasting social peace in the workplace”",
     "navigation": "Navigation",

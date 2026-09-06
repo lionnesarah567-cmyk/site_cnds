@@ -3,6 +3,7 @@ import slugify from 'slugify';
 import { db } from '../db/index.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { newsSchema, sanitizeString } from '../middleware/validate.js';
+import { notifySubscribersAboutNewArticle } from '../services/emailService.js';
 
 const router = express.Router();
 
@@ -130,6 +131,19 @@ router.post('/', authenticateToken, async (req, res) => {
         image_url || null,
         pubDate,
       ],
+    });
+
+    // Notifier tous les abonnés newsletter en tâche de fond (asynchrone)
+    notifySubscribersAboutNewArticle({
+      slug,
+      title_fr,
+      title_rn: title_rn || null,
+      title_en: req.body.title_en || null,
+      summary_fr,
+      summary_rn: summary_rn || null,
+      summary_en: req.body.summary_en || null,
+    }).catch((notifErr) => {
+      console.error('Notice notification newsletter:', notifErr.message);
     });
 
     return res.status(201).json({

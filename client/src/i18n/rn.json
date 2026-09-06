@@ -160,6 +160,18 @@
     "success": "Ubutumwa bwawe bwashitse neza muri CNDS.",
     "error": "Habaye ikosa mu kurungika ubutumwa. Subiramwo."
   },
+  "newsletter": {
+    "badge": "Guma Ku Gihe",
+    "title": "Iyandikishe kuronka amakuru mashasha ya CNDS",
+    "subtitle": "Ronka amakuru yose, amatangazo, amategeko n'amasezerano mashasha ya CNDS bitambukiye kuri email yawe.",
+    "placeholder": "Injiza aderesi yawe ya email hano...",
+    "button": "Kwakira Amakuru",
+    "subscribing": "Turiko turavyandika...",
+    "privacy": "Ibyo mutwandikiye bibikwa mu ibanga rikomeye. Mushobora guhagarika kwakira amakuru igihe cose mubishakiye.",
+    "success": "Murakoze ! Ubusabe bwanyu bwo kuronka amakuru bwakiriwe neza.",
+    "already": "Iyi email isanzwe yanditswe mu bakira amakuru ya CNDS.",
+    "error": "Habaye akabazo. Suzuma email yawe maze usubiremo."
+  },
   "footer": {
     "tagline": "« Ibiganiro mu kazi ku bw'amahoro n'iterambere mu gihugu »",
     "navigation": "Ubuyobozi bw'Imbuga",

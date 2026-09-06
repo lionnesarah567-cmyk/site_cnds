@@ -1,13 +1,22 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { NewsletterSection } from './NewsletterSection';
 
 export const Footer = () => {
   const { t } = useLanguage();
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
 
   return (
-    <footer className="border-t border-cnds-line bg-cnds-white pt-12 pb-8 text-[13.5px] text-cnds-ink-soft">
-      <div className="wrap">
+    <footer className="bg-cnds-white text-[13.5px] text-cnds-ink-soft">
+      {!isAdmin && (
+        <div className="wrap pt-12 pb-8">
+          <NewsletterSection />
+        </div>
+      )}
+      <div className="border-t border-cnds-line pt-12 pb-8">
+        <div className="wrap">
         <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr_1fr] gap-8 pb-10 border-b border-cnds-line">
           
           {/* Col 1: Logo & Motto */}

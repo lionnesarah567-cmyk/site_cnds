@@ -126,7 +126,19 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 9. Table des Abonnés Newsletter
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    lang TEXT DEFAULT 'fr', -- 'fr', 'rn', 'en'
+    unsubscribe_token TEXT UNIQUE NOT NULL,
+    is_active INTEGER DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Index pour performances et unicité
 CREATE INDEX IF NOT EXISTS idx_news_slug ON news(slug);
 CREATE INDEX IF NOT EXISTS idx_news_published_at ON news(published_at);
 CREATE INDEX IF NOT EXISTS idx_legal_texts_date ON legal_texts(date_promulgated);
+CREATE INDEX IF NOT EXISTS idx_subscribers_email ON newsletter_subscribers(email);
+CREATE INDEX IF NOT EXISTS idx_subscribers_token ON newsletter_subscribers(unsubscribe_token);

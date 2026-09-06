@@ -63,6 +63,18 @@ export const api = {
     return data;
   },
 
+  // Newsletter subscription
+  async subscribeNewsletter(email, lang = 'fr') {
+    const res = await fetch(`${API_BASE_URL}/newsletter/subscribe`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, lang }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Newsletter subscription failed');
+    return data;
+  },
+
   // Auth
   async login(credentials) {
     const res = await fetch(`${API_BASE_URL}/auth/login`, {

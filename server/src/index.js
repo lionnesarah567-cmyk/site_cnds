@@ -17,6 +17,7 @@ import multimediaRoutes from './routes/multimedia.js';
 import galleryRoutes from './routes/gallery.js';
 import partnersRoutes from './routes/partners.js';
 import contactRoutes from './routes/contact.js';
+import newsletterRoutes from './routes/newsletter.js';
 
 dotenv.config();
 
@@ -70,6 +71,7 @@ app.use('/api/multimedia', multimediaRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/partners', partnersRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/newsletter', newsletterRoutes);
 
 // Serve static frontend files if built
 if (fs.existsSync(clientDist)) {
