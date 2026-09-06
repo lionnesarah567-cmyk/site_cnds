@@ -2,7 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 import { publicApiLimiter } from './middleware/rateLimit.js';
+import { seed } from './db/seed.js';
 
 // Import Routes
 import authRoutes from './routes/auth.js';
@@ -16,22 +20,17 @@ import contactRoutes from './routes/contact.js';
 
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const clientDist = path.resolve(__dirname, '../../client/dist');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Security Middlewares
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-        imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
-        connectSrc: ["'self'", 'https://*.turso.io', 'https://www.cndsburundi.bi'],
-      },
-    },
+    contentSecurityPolicy: false,
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   })
 );
@@ -57,6 +56,7 @@ app.get('/api/health', (req, res) => {
     status: 'online',
     institution: 'CNDS Burundi — Comité National de Dialogue Social',
     version: '1.0.0',
+    port: PORT,
     timestamp: new Date().toISOString(),
   });
 });
@@ -71,17 +71,9 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/partners', partnersRoutes);
 app.use('/api/contact', contactRoutes);
 
-import path from 'path';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { seed } from './db/seed.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const clientDist = path.resolve(__dirname, '../../client/dist');
-
 // Serve static frontend files if built
 if (fs.existsSync(clientDist)) {
+  console.log(`📁 Frontend statique trouvé dans: ${clientDist}`);
   app.use(express.static(clientDist));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) {
@@ -90,12 +82,13 @@ if (fs.existsSync(clientDist)) {
     res.sendFile(path.join(clientDist, 'index.html'));
   });
 } else {
-  // Fallback for API root
+  console.log(`ℹ️ Frontend non compilé dans ${clientDist} — Mode API seule activé`);
   app.get('/', (req, res) => {
     res.json({
       status: 'online',
-      message: 'CNDS Burundi Backend API is running.',
-      healthCheck: '/api/health',
+      institution: 'CNDS Burundi API',
+      health: '/api/health',
+      time: new Date().toISOString(),
     });
   });
 }
