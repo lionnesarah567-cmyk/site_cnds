@@ -104,14 +104,60 @@ export async function sendViaBrevoApi({ to, subject, html, text }) {
 }
 
 /**
+ * Envoi direct via l'API REST HTTPS de Resend (Port 443 - Recommandé par Railway)
+ */
+export async function sendViaResendApi({ to, subject, html, text }) {
+  const apiKey = cleanEnv(process.env.RESEND_API_KEY);
+  if (!apiKey) {
+    throw new Error('Clé API Resend manquante (RESEND_API_KEY).');
+  }
+
+  const fromStr = getFromEmail();
+  const from = fromStr.includes('@resend.dev') ? fromStr : 'CNDS Burundi <onboarding@resend.dev>';
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      subject,
+      html: html || `<p>${text || subject}</p>`,
+    }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    const errMsg = data.message || (typeof data === 'object' ? JSON.stringify(data) : 'Erreur Resend API');
+    throw new Error(errMsg);
+  }
+  return data;
+}
+
+/**
  * Envoi unifié : tente l'API HTTPS Brevo en priorité (anti-blocage firewall), puis SMTP standard
  */
 export async function sendMailUnified({ to, subject, html, text }) {
   const host = cleanEnv(process.env.SMTP_HOST);
   const pass = cleanEnv(process.env.SMTP_PASS);
-  const isBrevo = (host && host.includes('brevo')) || (pass && (pass.startsWith('xsmtpsib-') || pass.startsWith('xkeysib-')));
+  const resendKey = cleanEnv(process.env.RESEND_API_KEY);
+  const isBrevo = (host && host.includes('brevo')) || (pass && (pass.startsWith('xsmtpsib-') || pass.startsWith('xkeysib-'))) || (cleanEnv(process.env.BREVO_API_KEY));
 
-  // 1. Si Brevo est utilisé, passer par l'API REST HTTPS (Port 443) pour contourner le blocage du port 587 sur Railway
+  // 1. Si Resend est configuré, passer par l'API REST HTTPS Resend (Port 443)
+  if (resendKey) {
+    try {
+      const apiResult = await sendViaResendApi({ to, subject, html, text });
+      console.log(`✅ Email envoyé via API HTTPS Resend (Port 443) à ${to}`);
+      return { success: true, method: 'resend_https_api', messageId: apiResult.id };
+    } catch (resendErr) {
+      console.warn('⚠️ Tentative API Resend HTTPS a échoué:', resendErr.message);
+    }
+  }
+
+  // 2. Si Brevo est utilisé, passer par l'API REST HTTPS (Port 443) pour contourner le blocage des ports par Railway
   if (isBrevo) {
     try {
       const apiResult = await sendViaBrevoApi({ to, subject, html, text });
@@ -392,7 +438,32 @@ export async function sendWelcomeEmail(email, lang, unsubscribeToken) {
 export async function testSmtpConnection(targetEmail) {
   const host = cleanEnv(process.env.SMTP_HOST);
   const pass = cleanEnv(process.env.SMTP_PASS);
-  const isBrevo = (host && host.includes('brevo')) || (pass && (pass.startsWith('xsmtpsib-') || pass.startsWith('xkeysib-')));
+  const resendKey = cleanEnv(process.env.RESEND_API_KEY);
+  const isBrevo = (host && host.includes('brevo')) || (pass && (pass.startsWith('xsmtpsib-') || pass.startsWith('xkeysib-'))) || (cleanEnv(process.env.BREVO_API_KEY));
+
+  // Test 0 : Si Resend est configuré (Port 443)
+  if (resendKey) {
+    try {
+      const apiRes = await sendViaResendApi({
+        to: targetEmail,
+        subject: 'Test Connexion Resend HTTPS — CNDS Burundi',
+        text: 'Félicitations ! Votre compte Resend est connecté avec succès via HTTPS (Port 443). Vos emails fonctionnent sans aucun blocage !',
+      });
+      return {
+        success: true,
+        methode: 'Resend HTTPS API (Port 443 - Garanti sans blocage)',
+        id: apiRes.id,
+        destinataire: targetEmail,
+        message: 'Email de test envoyé avec succès via Resend !',
+      };
+    } catch (resendErr) {
+      return {
+        success: false,
+        methode: 'Resend HTTPS API (Port 443)',
+        erreur: resendErr.message,
+      };
+    }
+  }
 
   // Test 1 : Si Brevo est configuré, tester directement l'API REST HTTPS (Port 443 sans aucun blocage firewall)
   if (isBrevo) {
