@@ -15,28 +15,135 @@ export function getFromEmail() {
 function getTransporter() {
   const service = cleanEnv(process.env.SMTP_SERVICE);
   const host = cleanEnv(process.env.SMTP_HOST);
-  const port = Number(cleanEnv(process.env.SMTP_PORT)) || 587;
+  const rawPort = cleanEnv(process.env.SMTP_PORT);
   const user = cleanEnv(process.env.SMTP_USER);
   const pass = cleanEnv(process.env.SMTP_PASS);
 
-  if (service && user && pass) {
+  if (!user || !pass) return null;
+
+  // 1. Spécial Gmail : Toujours forcer le port 465 SSL car Railway bloque systématiquement le port 587
+  const isGmail = (service && service.toLowerCase() === 'gmail') || (host && host.toLowerCase().includes('gmail'));
+  if (isGmail) {
+    return nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: { user, pass },
+      tls: { rejectUnauthorized: false },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 10000,
+    });
+  }
+
+  // 2. Service prédéfini autre que Gmail
+  if (service) {
     return nodemailer.createTransport({
       service,
       auth: { user, pass },
       tls: { rejectUnauthorized: false },
+      connectionTimeout: 8000,
+      greetingTimeout: 8000,
+      socketTimeout: 8000,
     });
   }
 
-  if (host && user && pass) {
+  // 3. Serveur SMTP personnalisé
+  if (host) {
+    const port = Number(rawPort) || 465;
     return nodemailer.createTransport({
       host,
       port,
       secure: port === 465,
       auth: { user, pass },
       tls: { rejectUnauthorized: false },
+      connectionTimeout: 8000,
+      greetingTimeout: 8000,
+      socketTimeout: 8000,
     });
   }
+
   return null;
+}
+
+/**
+ * Envoi direct via l'API REST HTTPS de Brevo (Port 443 - Garanti contre le blocage des ports SMTP par Railway)
+ */
+export async function sendViaBrevoApi({ to, subject, html, text }) {
+  const apiKey = cleanEnv(process.env.BREVO_API_KEY) || cleanEnv(process.env.SMTP_PASS);
+  if (!apiKey) {
+    throw new Error('Clé API Brevo manquante (SMTP_PASS ou BREVO_API_KEY).');
+  }
+
+  const fromStr = getFromEmail();
+  const match = fromStr.match(/^(.*?)\s*<(.+)>$/);
+  const senderName = match ? match[1].trim() : 'CNDS Burundi';
+  const senderEmail = match ? match[2].trim() : fromStr;
+
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'api-key': apiKey,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      sender: { name: senderName, email: senderEmail },
+      to: [{ email: to }],
+      subject,
+      htmlContent: html || `<p>${text || subject}</p>`,
+    }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    const errMsg = data.message || (typeof data === 'object' ? JSON.stringify(data) : 'Erreur Brevo API');
+    throw new Error(errMsg);
+  }
+  return data;
+}
+
+/**
+ * Envoi unifié : tente l'API HTTPS Brevo en priorité (anti-blocage firewall), puis SMTP standard
+ */
+export async function sendMailUnified({ to, subject, html, text }) {
+  const host = cleanEnv(process.env.SMTP_HOST);
+  const pass = cleanEnv(process.env.SMTP_PASS);
+  const isBrevo = (host && host.includes('brevo')) || (pass && (pass.startsWith('xsmtpsib-') || pass.startsWith('xkeysib-')));
+
+  // 1. Si Brevo est utilisé, passer par l'API REST HTTPS (Port 443) pour contourner le blocage du port 587 sur Railway
+  if (isBrevo) {
+    try {
+      const apiResult = await sendViaBrevoApi({ to, subject, html, text });
+      console.log(`✅ Email envoyé via API HTTPS Brevo (Port 443) à ${to}`);
+      return { success: true, method: 'brevo_https_api', messageId: apiResult.messageId };
+    } catch (apiErr) {
+      console.warn('⚠️ Tentative API Brevo HTTPS a échoué, repli sur le SMTP classique...', apiErr.message);
+    }
+  }
+
+  // 2. Transporteur SMTP classique
+  const transporter = getTransporter();
+  if (transporter) {
+    try {
+      const info = await transporter.sendMail({
+        from: getFromEmail(),
+        to,
+        subject,
+        html,
+        text,
+      });
+      console.log(`✅ Email envoyé via SMTP à ${to}`);
+      return { success: true, method: 'smtp', messageId: info.messageId };
+    } catch (mailErr) {
+      console.error(`❌ Échec SMTP à ${to}:`, mailErr.message);
+      throw mailErr;
+    }
+  }
+
+  // 3. Mode simulation si aucun provider configuré
+  console.log(`📨 [Simulation Email CNDS] À: ${to} | Objet: "${subject}"`);
+  return { success: true, method: 'simulation' };
 }
 
 const CLIENT_URL = process.env.CLIENT_URL || 'https://site-cnds-bbce.vercel.app';
@@ -223,22 +330,15 @@ export async function notifySubscribersAboutNewArticle(article) {
         unsubscribeToken: sub.unsubscribe_token,
       });
 
-      if (transporter) {
-        try {
-          await transporter.sendMail({
-            from: getFromEmail(),
-            to: sub.email,
-            subject,
-            html,
-          });
-          sentCount++;
-        } catch (mailErr) {
-          console.error(`❌ Échec d'envoi à ${sub.email}:`, mailErr.message, mailErr.response || '');
-        }
-      } else {
-        // Mode simulation (quand pas de SMTP configuré)
-        console.log(`📨 [Simulation Email CNDS] À: ${sub.email} (${subLang.toUpperCase()}) | Objet: "${subject}" | Lien: ${CLIENT_URL}/actualites/${article.slug}`);
+      try {
+        await sendMailUnified({
+          to: sub.email,
+          subject,
+          html,
+        });
         sentCount++;
+      } catch (mailErr) {
+        console.error(`❌ Échec d'envoi à ${sub.email}:`, mailErr.message);
       }
     }
 
@@ -254,7 +354,6 @@ export async function notifySubscribersAboutNewArticle(article) {
  * Envoie un email de confirmation de bienvenue à un nouvel abonné
  */
 export async function sendWelcomeEmail(email, lang, unsubscribeToken) {
-  const transporter = getTransporter();
   const subLang = ['fr', 'rn', 'en'].includes(lang) ? lang : 'fr';
 
   const welcomeSubjects = {
@@ -275,34 +374,65 @@ export async function sendWelcomeEmail(email, lang, unsubscribeToken) {
     unsubscribeToken,
   });
 
-  if (transporter) {
-    try {
-      await transporter.sendMail({
-        from: getFromEmail(),
-        to: email,
-        subject: welcomeSubjects[subLang],
-        html: welcomeHtml,
-      });
-      console.log(`✅ Email de bienvenue envoyé avec succès à ${email}`);
-    } catch (err) {
-      console.error('❌ Erreur envoi email bienvenue:', err.message, err.response || '');
-    }
-  } else {
-    console.log(`📨 [Simulation Email Bienvenue CNDS] À: ${email} (${subLang.toUpperCase()}) | Sujet: "${welcomeSubjects[subLang]}"`);
+  try {
+    const res = await sendMailUnified({
+      to: email,
+      subject: welcomeSubjects[subLang],
+      html: welcomeHtml,
+    });
+    console.log(`✅ Email de bienvenue (${res.method}) envoyé à ${email}`);
+  } catch (err) {
+    console.error('❌ Erreur envoi email bienvenue:', err.message);
   }
 }
 
 /**
- * Endpoint de diagnostic et test direct de la connexion SMTP
+ * Endpoint de diagnostic et test direct de la connexion
  */
 export async function testSmtpConnection(targetEmail) {
+  const host = cleanEnv(process.env.SMTP_HOST);
+  const pass = cleanEnv(process.env.SMTP_PASS);
+  const isBrevo = (host && host.includes('brevo')) || (pass && (pass.startsWith('xsmtpsib-') || pass.startsWith('xkeysib-')));
+
+  // Test 1 : Si Brevo est configuré, tester directement l'API REST HTTPS (Port 443 sans aucun blocage firewall)
+  if (isBrevo) {
+    try {
+      const apiRes = await sendViaBrevoApi({
+        to: targetEmail,
+        subject: 'Test Connexion Brevo HTTPS — CNDS Burundi',
+        text: 'Félicitations ! Votre compte Brevo est connecté avec succès via HTTPS (Port 443). Vos emails fonctionnent sans aucun blocage !',
+      });
+      return {
+        success: true,
+        methode: 'Brevo HTTPS API (Port 443 - Garanti sans blocage de port)',
+        messageId: apiRes.messageId,
+        expediteur_utilise: getFromEmail(),
+        destinataire: targetEmail,
+        message: 'Email de test envoyé avec succès ! Vérifiez votre boîte de réception.',
+      };
+    } catch (apiErr) {
+      return {
+        success: false,
+        methode: 'Brevo HTTPS API (Port 443)',
+        erreur: apiErr.message,
+        expediteur_utilise: getFromEmail(),
+        conseil: 'Vérifiez que votre clé SMTP_PASS est exacte et que l’adresse dans SMTP_FROM correspond à votre compte Brevo.',
+      };
+    }
+  }
+
+  // Test 2 : Si autre transporteur SMTP (ex: Gmail ou serveur dédié)
+  const service = cleanEnv(process.env.SMTP_SERVICE);
+  const isGmail = (service && service.toLowerCase() === 'gmail') || (host && host.toLowerCase().includes('gmail'));
+
   const transporter = getTransporter();
   if (!transporter) {
     return {
       success: false,
       configured: false,
-      message: 'Aucun SMTP détecté. Assurez-vous d’avoir renseigné SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS sur Railway.',
+      message: 'Aucun serveur d’email détecté sur Railway. Assurez-vous d’avoir configuré les variables sur Railway.',
       variables_detectees: {
+        SMTP_SERVICE: !!process.env.SMTP_SERVICE,
         SMTP_HOST: !!process.env.SMTP_HOST,
         SMTP_PORT: !!process.env.SMTP_PORT,
         SMTP_USER: !!process.env.SMTP_USER,
@@ -317,10 +447,14 @@ export async function testSmtpConnection(targetEmail) {
   } catch (verifyErr) {
     return {
       success: false,
+      methode: isGmail ? 'Gmail_SSL_Port_465' : 'SMTP_Standard',
       etape: 'Verification_authentification_SMTP',
       erreur: verifyErr.message,
       code: verifyErr.code,
       reponse_serveur: verifyErr.response,
+      conseil: isGmail
+        ? 'Vérifiez que vous avez bien utilisé le mot de passe d’application de 16 lettres (et non votre mot de passe Gmail habituel).'
+        : 'Si le port 587 est bloqué par Railway (ETIMEDOUT), réglez SMTP_PORT sur 2525 sur Railway.',
     };
   }
 
@@ -329,20 +463,19 @@ export async function testSmtpConnection(targetEmail) {
       from: getFromEmail(),
       to: targetEmail,
       subject: 'Test Connexion SMTP — CNDS Burundi',
-      text: 'Félicitations ! Votre serveur SMTP Brevo est correctement connecté et expédie les emails avec succès.',
+      text: 'Félicitations ! Votre serveur SMTP fonctionne avec succès.',
     });
     return {
       success: true,
-      etape: 'Envoi_reussi',
+      methode: isGmail ? 'Gmail_SSL_Port_465' : 'SMTP_Standard',
       messageId: info.messageId,
       accepted: info.accepted,
-      reponse: info.response,
       expediteur_utilise: getFromEmail(),
     };
   } catch (sendErr) {
     return {
       success: false,
-      etape: 'Envoi_email_test',
+      methode: isGmail ? 'Gmail_SSL_Port_465' : 'SMTP_Standard',
       erreur: sendErr.message,
       code: sendErr.code,
       reponse_serveur: sendErr.response,
